@@ -1,14 +1,15 @@
 # nbreqs
 
-***WORK IN PROGRESS - NOT READY FOR USE***
-
 `nbreqs` is a lightweight Python tool designed to extract the external library dependencies from Jupyter notebooks.
 
-I'm working on this tool because I manage repositories of notebooks with `poetry`, whereas users will only use single notebooks and copy them to other directories not managed by `poetry`. They thus need requirement files specific to each notebook instead of the repository's total requirements.
+I made this tool because I manage repositories containing several notebooks with `poetry`, whereas users will only use single notebooks and copy them to other directories not themselves managed by `poetry`. They thus need requirement files specific to each notebook instead of the repository's total requirements.
+
+`nbreqs` generates a `<notebook>_requirements.txt` file for each notebook in the same directory as each notebook.
 
 ## Features
 
-- Extracts only external dependencies (ignores standard library modules).
+- Finds notebooks recursively starting at the provided `PATH`.
+- Extracts only external dependencies found on PyPI (ignores standard library modules and sources other than PyPI).
 - Works on Jupyter notebooks.
 - Generates minimal `<notebook>_requirements.txt` files (one per notebook).
 
@@ -18,11 +19,9 @@ The preferred way of installing this tool is through `pipx`:
 
 `pipx install nbreqs`
 
-There is currently no other supported installation method.
+It can also be installed as a library through `pip`; check the tests for examples.
 
 ## Usage
-
-***TO BE DEVELOPPED***
 
 Once installed, the utility is used on the command line; see `--help` for details:
 
@@ -41,7 +40,7 @@ $ py nbreqs/cli.py --help
 
 Contributions are welcome; please:
 
-- Use `black`.
+- Activate `pre-commit` and use `black`.
 - Ensure `pytest` runs without failures.
 - Be nice.
 
