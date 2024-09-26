@@ -62,3 +62,13 @@ def test_latex_cell_pinned():
         assert reqs.readlines() == [
             "pytest==8.3.3\n",
         ]
+
+
+def test_non_pypi_pkg():
+    dir: str = "tests"
+    file: str = "non_pypi_pkg"
+
+    nb: Path = Path(f"{dir}/{file}.{ext}")
+    process_notebook(nb=nb, pin=False)
+    with open(f"{dir}/{file}_requirements.txt", "r") as reqs:
+        assert reqs.readlines() == []

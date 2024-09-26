@@ -12,6 +12,9 @@ import ast
 import sys
 from stdlib_list import stdlib_list
 
+# To fitler out non-standard libraries that aren't on PyPI
+import requests
+
 # To get libraries' version without importing them
 from importlib.metadata import version, PackageNotFoundError
 
@@ -59,6 +62,7 @@ def process_notebook(nb: Path, pin: bool):
     tree = ast.parse(py_code)
     imported_libs = set()
 
+    # Find all imported packages
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             for alias in node.names:
@@ -67,7 +71,13 @@ def process_notebook(nb: Path, pin: bool):
             if node.module:
                 imported_libs.add(node.module.split(".")[0])
 
+    # Remove standard packages
     ext_libs = filter_out_std_libs(imported_libs)
+
+    # Remove non-PyPI packages
+    ext_libs = [p for p in ext_libs if is_on_pypi(p)]
+
+    # Create the requirements file
     with open(Path(f"{nb._str.strip(ext)}_requirements.txt"), "w") as req_file:
         for lib in ext_libs:
             if pin:
@@ -87,10 +97,24 @@ def filter_out_std_libs(imported_libs: set) -> list:
 
 def get_installed_version(lib_name: str) -> str:
     try:
-        # Get the installed version of the package
         return version(lib_name)
+
     except PackageNotFoundError:
         return None
+
+
+def is_on_pypi(package_name: str) -> bool:
+    url = f"https://pypi.org/pypi/{package_name}/json"
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        return True
+
+    elif response.status_code == 404:
+        return False
+
+    else:
+        raise Exception(f"Error checking package on PyPI: {response.status_code}")
 
 
 if __name__ == "__main__":
