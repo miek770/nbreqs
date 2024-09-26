@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nbreqs"
-version = "0.1.0"
+version = "0.1.1"
 description = "Generate notebook_requirements.txt files for Jupyter Notebooks (.ipynb files)."
 authors = ["Michel Lavoie <lavoie.michel@gmail.com>"]
 license = "MIT"
@@ -17,6 +17,9 @@ ipython = "^8.27.0"
 pytest = "^8.3.3"
 black = "^24.8.0"
 pre-commit = "^3.8.0"
+
+[tool.poetry.scripts]
+nbreqs = "nbreqs.nbreqs:main"
 
 [build-system]
 requires = ["poetry-core"]

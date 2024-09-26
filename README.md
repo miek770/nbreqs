@@ -1,6 +1,6 @@
 # nbreqs
 
-***WORK IN PROGRESS***
+***WORK IN PROGRESS - NOT READY FOR USE***
 
 `nbreqs` is a lightweight Python tool designed to extract the external library dependencies from Jupyter notebooks.
 
