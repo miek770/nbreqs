@@ -48,7 +48,7 @@ def explore_directory(dir: Path, pin: bool):
 
 def process_notebook(nb: Path, pin: bool):
     with open(nb, "r", encoding="utf-8") as f:
-        nb_content = nbformat.read(f, as_version=4)
+        nb_content = nbformat.read(f, as_version=nbformat.NO_CONVERT)
 
     # Filter out anything that isn't code
     # (to prevent `ast` parsing failures)
