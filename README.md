@@ -27,13 +27,14 @@ There is currently no other supported installation method.
 Once installed, the utility is used on the command line; see `--help` for details:
 
 ```shell
-$ nbreqs --help
+$ py nbreqs/cli.py --help
 
- Usage: nbreqs [OPTIONS] PATH
+ Usage: cli.py [OPTIONS] PATH
 
-╭─ Options ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help      Show this message and exit.                                                                                                   │
-╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --pin   -p    Pin dependencies to the currently installed version, if any.                                                                          │
+│ --help        Show this message and exit.                                                                                                           │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 
 ## Development

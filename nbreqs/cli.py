@@ -21,22 +21,29 @@ ext: str = ".ipynb"
 
 @click.command()
 @click.argument("path")
-def main(path: str):
+@click.option(
+    "-p",
+    "--pin",
+    type=bool,
+    default=False,
+    help="Pin dependencies to the currently installed version, if any.",
+)
+def main(path: str, pin: bool):
     dir: Path = Path(path)
 
     if not dir.exists():
         print(f"Invalid path: {dir}")
         return 1  # Exit with error
 
-    explore_directory(dir)
+    explore_directory(dir, pin)
 
 
-def explore_directory(dir: Path):
+def explore_directory(dir: Path, pin: bool):
     for nb in dir.rglob(f"*{ext}"):
-        process_notebook(nb)
+        process_notebook(nb, pin)
 
 
-def process_notebook(nb: Path):
+def process_notebook(nb: Path, pin: bool):
     with open(nb, "r", encoding="utf-8") as f:
         nb_content = nbformat.read(f, as_version=4)
 
@@ -63,11 +70,14 @@ def process_notebook(nb: Path):
     ext_libs = filter_out_std_libs(imported_libs)
     with open(Path(f"{nb._str.strip(ext)}_requirements.txt"), "w") as req_file:
         for lib in ext_libs:
-            lib_version = get_installed_version(lib)
-            if lib_version is None:
-                req_file.write(f"{lib}\n")
+            if pin:
+                lib_version = get_installed_version(lib)
+                if lib_version is None:
+                    req_file.write(f"{lib}\n")
+                else:
+                    req_file.write(f"{lib}=={lib_version}\n")
             else:
-                req_file.write(f"{lib}=={lib_version}\n")
+                req_file.write(f"{lib}\n")
 
 
 def filter_out_std_libs(imported_libs: set) -> list:

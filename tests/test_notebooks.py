@@ -11,7 +11,24 @@ def test_basic_imports():
     file: str = "basic_imports"
 
     nb: Path = Path(f"{dir}/{file}.{ext}")
-    process_notebook(nb=nb)
+    process_notebook(nb=nb, pin=False)
+    with open(f"{dir}/{file}_requirements.txt", "r") as reqs:
+        assert reqs.readlines() == [
+            "nbconvert\n",
+            "numpy\n",
+            "pandas\n",
+            "rich_click\n",
+            "sklearn\n",
+            "stdlib_list\n",
+        ]
+
+
+def test_basic_imports_pinned():
+    dir: str = "tests"
+    file: str = "basic_imports"
+
+    nb: Path = Path(f"{dir}/{file}.{ext}")
+    process_notebook(nb=nb, pin=True)
     with open(f"{dir}/{file}_requirements.txt", "r") as reqs:
         assert reqs.readlines() == [
             "nbconvert==7.16.4\n",
@@ -28,7 +45,19 @@ def test_latex_cell():
     file: str = "latex_cell"
 
     nb: Path = Path(f"{dir}/{file}.{ext}")
-    process_notebook(nb=nb)
+    process_notebook(nb=nb, pin=False)
+    with open(f"{dir}/{file}_requirements.txt", "r") as reqs:
+        assert reqs.readlines() == [
+            "pytest\n",
+        ]
+
+
+def test_latex_cell_pinned():
+    dir: str = "tests"
+    file: str = "latex_cell"
+
+    nb: Path = Path(f"{dir}/{file}.{ext}")
+    process_notebook(nb=nb, pin=True)
     with open(f"{dir}/{file}_requirements.txt", "r") as reqs:
         assert reqs.readlines() == [
             "pytest==8.3.3\n",
