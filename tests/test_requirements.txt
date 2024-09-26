@@ -1,0 +1,6 @@
+nbconvert==7.16.4
+sklearn
+rich_click==1.8.3
+numpy
+pandas
+stdlib_list==0.10.0
