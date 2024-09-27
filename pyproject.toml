@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nbreqs"
-version = "0.1.4"
+version = "0.2.0"
 description = "Generate notebook_requirements.txt files for Jupyter Notebooks (.ipynb files)."
 authors = ["Michel Lavoie <lavoie.michel@gmail.com>"]
 license = "MIT"

@@ -25,16 +25,7 @@ It can also be installed as a library through `pip`; check the tests for example
 
 Once installed, the utility is used on the command line; see `--help` for details:
 
-```shell
-$ py nbreqs/cli.py --help
-
- Usage: cli.py [OPTIONS] PATH
-
-╭─ Options ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ --pin   -p    Pin dependencies to the currently installed version, if any.                                                                          │
-│ --help        Show this message and exit.                                                                                                           │
-╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
-```
+[![asciicast](https://asciinema.org/a/677950.svg)](https://asciinema.org/a/677950)
 
 ## Development
 
