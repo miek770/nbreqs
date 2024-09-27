@@ -25,28 +25,56 @@ ext: str = ".ipynb"
 @click.command()
 @click.argument("path")
 @click.option(
-    "-p",
-    "--pin",
-    type=bool,
+    "--pin/--no-pin",
     default=False,
     help="Pin dependencies to the currently installed version, if any.",
+    show_default=True,
 )
-def main(path: str, pin: bool):
+@click.option(
+    "--quiet/--no-quiet",
+    default=False,
+    help="Hide non-error mesages.",
+    show_default=True,
+)
+@click.option(
+    "--verbose/--no-verbose",
+    default=False,
+    help="Print details during execution (overrides --quiet).",
+    show_default=True,
+)
+@click.option(
+    "--dry-run/--no-dry-run",
+    default=False,
+    help="Execute without creating the requirements files (implies --verbose).",
+    show_default=True,
+)
+def main(path: str, pin: bool, quiet: bool, verbose: bool, dry_run: bool):
     dir: Path = Path(path)
 
     if not dir.exists():
         print(f"Invalid path: {dir}")
         return 1  # Exit with error
 
-    explore_directory(dir, pin)
+    # --verbose is implied with --dry-run
+    if dry_run:
+        verbose = True
+
+    # --verbose overrides --quiet
+    if verbose:
+        quiet = False
+
+    explore_directory(dir, pin, quiet, verbose, dry_run)
 
 
-def explore_directory(dir: Path, pin: bool):
+def explore_directory(dir: Path, pin: bool, quiet: bool, verbose: bool, dry_run: bool):
     for nb in dir.rglob(f"*{ext}"):
-        process_notebook(nb, pin)
+        process_notebook(nb, pin, quiet, verbose, dry_run)
 
 
-def process_notebook(nb: Path, pin: bool):
+def process_notebook(nb: Path, pin: bool, quiet: bool, verbose: bool, dry_run: bool):
+    if not quiet:
+        print(f"Generating requirements from: {nb}")
+
     with open(nb, "r", encoding="utf-8") as f:
         nb_content = nbformat.read(f, as_version=nbformat.NO_CONVERT)
 
@@ -77,17 +105,33 @@ def process_notebook(nb: Path, pin: bool):
     # Remove non-PyPI packages
     ext_libs = [p for p in ext_libs if is_on_pypi(p)]
 
-    # Create the requirements file
-    with open(Path(f"{nb._str.strip(ext)}_requirements.txt"), "w") as req_file:
+    # Get the installed version, if any
+    if pin:
+        ver_libs: dict = {}
         for lib in ext_libs:
-            if pin:
-                lib_version = get_installed_version(lib)
-                if lib_version is None:
+            lib_version = get_installed_version(lib)
+            if lib_version is not None:
+                ver_libs[lib] = lib_version
+
+    # Create the requirements file
+    if len(ext_libs) and not dry_run:
+        with open(Path(f"{nb._str.strip(ext)}_requirements.txt"), "w") as req_file:
+            for lib in ext_libs:
+                if not pin or lib not in ver_libs:
                     req_file.write(f"{lib}\n")
                 else:
-                    req_file.write(f"{lib}=={lib_version}\n")
-            else:
-                req_file.write(f"{lib}\n")
+                    req_file.write(f"{lib}=={ver_libs[lib]}\n")
+
+    # Print the result
+    if verbose:
+        if len(ext_libs):
+            for lib in ext_libs:
+                if not pin or lib not in ver_libs:
+                    print(f" - {lib}")
+                else:
+                    print(f" - {lib}=={ver_libs[lib]}")
+        else:
+            print(f" - No requirement from PyPI")
 
 
 def filter_out_std_libs(imported_libs: set) -> list:
@@ -106,7 +150,7 @@ def get_installed_version(lib_name: str) -> str:
 def is_on_pypi(package_name: str) -> bool:
     url = f"https://pypi.org/pypi/{package_name}/json"
     response = requests.get(url)
-    
+
     if response.status_code == 200:
         return True
 
