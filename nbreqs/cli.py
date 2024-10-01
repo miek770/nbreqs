@@ -25,12 +25,6 @@ ext: str = ".ipynb"
 @click.command()
 @click.argument("path")
 @click.option(
-    "--pin/--no-pin",
-    default=False,
-    help="Pin dependencies to the currently installed version, if any.",
-    show_default=True,
-)
-@click.option(
     "--quiet/--no-quiet",
     default=False,
     help="Hide non-error mesages.",
@@ -48,7 +42,7 @@ ext: str = ".ipynb"
     help="Execute without creating the requirements files (implies --verbose).",
     show_default=True,
 )
-def main(path: str, pin: bool, quiet: bool, verbose: bool, dry_run: bool):
+def main(path: str, quiet: bool, verbose: bool, dry_run: bool):
     dir: Path = Path(path)
 
     if not dir.exists():
@@ -62,6 +56,9 @@ def main(path: str, pin: bool, quiet: bool, verbose: bool, dry_run: bool):
     # --verbose overrides --quiet
     if verbose:
         quiet = False
+
+    # Until issue #7 is fixed
+    pin: bool = False
 
     explore_directory(dir, pin, quiet, verbose, dry_run)
 
