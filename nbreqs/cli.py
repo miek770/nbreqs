@@ -1,5 +1,6 @@
 import rich_click as click
 from pathlib import Path
+from typing import Optional
 
 # To convert the notebook to Python
 import nbformat
@@ -16,7 +17,7 @@ from stdlib_list import stdlib_list
 import requests
 
 # To get libraries' version without importing them
-from importlib.metadata import version, PackageNotFoundError
+from subprocess import run
 
 # Global variable
 ext: str = ".ipynb"
@@ -57,18 +58,15 @@ def main(path: str, quiet: bool, verbose: bool, dry_run: bool):
     if verbose:
         quiet = False
 
-    # Until issue #7 is fixed
-    pin: bool = False
-
-    explore_directory(dir, pin, quiet, verbose, dry_run)
+    explore_directory(dir, quiet, verbose, dry_run)
 
 
-def explore_directory(dir: Path, pin: bool, quiet: bool, verbose: bool, dry_run: bool):
+def explore_directory(dir: Path, quiet: bool, verbose: bool, dry_run: bool):
     for nb in dir.rglob(f"*{ext}"):
-        process_notebook(nb, pin, quiet, verbose, dry_run)
+        process_notebook(nb, quiet, verbose, dry_run)
 
 
-def process_notebook(nb: Path, pin: bool, quiet: bool, verbose: bool, dry_run: bool):
+def process_notebook(nb: Path, quiet: bool, verbose: bool, dry_run: bool):
     if not quiet:
         print(f"Generating requirements from: {nb}")
 
@@ -102,31 +100,17 @@ def process_notebook(nb: Path, pin: bool, quiet: bool, verbose: bool, dry_run: b
     # Remove non-PyPI packages
     ext_libs = [p for p in ext_libs if is_on_pypi(p)]
 
-    # Get the installed version, if any
-    if pin:
-        ver_libs: dict = {}
-        for lib in ext_libs:
-            lib_version = get_installed_version(lib)
-            if lib_version is not None:
-                ver_libs[lib] = lib_version
-
     # Create the requirements file
     if len(ext_libs) and not dry_run:
         with open(Path(f"{nb._str.strip(ext)}_requirements.txt"), "w") as req_file:
             for lib in ext_libs:
-                if not pin or lib not in ver_libs:
-                    req_file.write(f"{lib}\n")
-                else:
-                    req_file.write(f"{lib}=={ver_libs[lib]}\n")
+                req_file.write(f"{lib}\n")
 
     # Print the result
     if verbose:
         if len(ext_libs):
             for lib in ext_libs:
-                if not pin or lib not in ver_libs:
-                    print(f" - {lib}")
-                else:
-                    print(f" - {lib}=={ver_libs[lib]}")
+                print(f" - {lib}")
         else:
             print(f" - No requirement from PyPI")
 
@@ -134,14 +118,6 @@ def process_notebook(nb: Path, pin: bool, quiet: bool, verbose: bool, dry_run: b
 def filter_out_std_libs(imported_libs: set) -> list:
     std_libs = stdlib_list(f"{sys.version_info.major}.{sys.version_info.minor}")
     return sorted([lib for lib in imported_libs if lib not in std_libs])
-
-
-def get_installed_version(lib_name: str) -> str:
-    try:
-        return version(lib_name)
-
-    except PackageNotFoundError:
-        return None
 
 
 def is_on_pypi(package_name: str) -> bool:

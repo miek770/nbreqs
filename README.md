@@ -27,7 +27,7 @@ Once installed, the utility is used on the command line; see `--help` for detail
 
 [![asciicast](https://asciinema.org/a/677950.svg)](https://asciinema.org/a/677950)
 
-> The `--pin` option has been disabled until issue #7 is fixed!
+> The `--pin` option was removed in version 0.2.2. See issue #7 for details.
 
 ## Development
 
