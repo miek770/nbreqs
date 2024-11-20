@@ -5,7 +5,7 @@ info:
 	@echo $(NAME), version $(VERSION)
 
 publish:
-	poetry publish
+	poetry run twine upload -r pypi dist/$(NAME)-$(VERSION)*.whl
 
 tests:
 	poetry run pytest
