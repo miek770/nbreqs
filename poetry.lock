@@ -1597,6 +1597,31 @@ docs = ["myst-parser", "pydata-sphinx-theme", "sphinx"]
 test = ["argcomplete (>=3.0.3)", "mypy (>=1.7.0)", "pre-commit", "pytest (>=7.0,<8.2)", "pytest-mock", "pytest-mypy-testing"]
 
 [[package]]
+name = "types-requests"
+version = "2.32.0.20241016"
+description = "Typing stubs for requests"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "types-requests-2.32.0.20241016.tar.gz", hash = "sha256:0d9cad2f27515d0e3e3da7134a1b6f28fb97129d86b867f24d9c726452634d95"},
+    {file = "types_requests-2.32.0.20241016-py3-none-any.whl", hash = "sha256:4195d62d6d3e043a4eaaf08ff8a62184584d2e8684e9d2aa178c7915a7da3747"},
+]
+
+[package.dependencies]
+urllib3 = ">=2"
+
+[[package]]
+name = "types-stdlib-list"
+version = "0.8.3.4"
+description = "Typing stubs for stdlib-list"
+optional = false
+python-versions = "*"
+files = [
+    {file = "types-stdlib-list-0.8.3.4.tar.gz", hash = "sha256:76d836a72171c3509cc2e9404685ff32f7e4ef070df6de9c770eaa0a9aae70db"},
+    {file = "types_stdlib_list-0.8.3.4-py3-none-any.whl", hash = "sha256:05c14625e9bc9abc5f3721f2b9cfed66b0e767947b8812e3a743261da14d585d"},
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.12.2"
 description = "Backported and Experimental Type Hints for Python 3.8+"
@@ -1669,4 +1694,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "0cfa5d906d8c35fa7b5d927cf6682dac51d2985be1da0e2189e17b1329e6141d"
+content-hash = "6b33150160be9b3e62bfca08855e5a774274f3f6a8ca85a8f38b623a59a25885"

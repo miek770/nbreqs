@@ -6,7 +6,7 @@ from pathlib import Path
 ext: str = "ipynb"
 
 
-def test_basic_imports():
+def test_basic_imports() -> None:
     dir: str = "tests"
     file: str = "basic_imports"
 
@@ -23,7 +23,7 @@ def test_basic_imports():
         ]
 
 
-def test_latex_cell():
+def test_latex_cell() -> None:
     dir: str = "tests"
     file: str = "latex_cell"
 
@@ -35,7 +35,7 @@ def test_latex_cell():
         ]
 
 
-def test_non_pypi_pkg():
+def test_non_pypi_pkg() -> None:
     dir: str = "tests"
     file: str = "non_pypi_pkg"
 

@@ -29,6 +29,8 @@ Once installed, the utility is used on the command line; see `--help` for detail
 
 > The `--pin` option was removed in version 0.2.2. See issue #7 for details.
 
+> Starting with version 0.2.3, `PATH` can be either a filename or a directory.
+
 ## Development
 
 Contributions are welcome; please:

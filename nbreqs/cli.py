@@ -48,7 +48,7 @@ def main(path: str, quiet: bool, verbose: bool, dry_run: bool):
 
     if not dir.exists():
         print(f"Invalid path: {dir}")
-        return 1  # Exit with error
+        exit(1)  # Exit with error
 
     # --verbose is implied with --dry-run
     if dry_run:
@@ -58,7 +58,10 @@ def main(path: str, quiet: bool, verbose: bool, dry_run: bool):
     if verbose:
         quiet = False
 
-    explore_directory(dir, quiet, verbose, dry_run)
+    if dir.is_file():
+        process_notebook(dir, quiet, verbose, dry_run)
+    else:
+        explore_directory(dir, quiet, verbose, dry_run)
 
 
 def explore_directory(dir: Path, quiet: bool, verbose: bool, dry_run: bool):
@@ -102,7 +105,9 @@ def process_notebook(nb: Path, quiet: bool, verbose: bool, dry_run: bool):
 
     # Create the requirements file
     if len(ext_libs) and not dry_run:
-        with open(Path(f"{nb._str.strip(ext)}_requirements.txt"), "w") as req_file:
+        with open(
+            Path(f"{nb.as_posix().strip(ext)}_requirements.txt"), "w"
+        ) as req_file:
             for lib in ext_libs:
                 req_file.write(f"{lib}\n")
 
